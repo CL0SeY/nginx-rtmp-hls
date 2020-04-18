@@ -5,3 +5,11 @@ services:
     ports:
       - "1935:1935"
       - "1936:8080"
+    links:
+      - "stunnel"
+  stunnel:
+    build:
+      context: .
+      dockerfile: stunnel.Dockerfile
+    ports:
+      - "19350:19350"
