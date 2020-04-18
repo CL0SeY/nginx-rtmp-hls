@@ -2,6 +2,8 @@ version: '3'
 services:
   nginx:
     build: .
+    environment:
+      - RTMP_PUSH_URLS
     ports:
       - "1935:1935"
       - "1936:8080"
