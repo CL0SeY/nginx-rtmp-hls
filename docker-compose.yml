@@ -3,10 +3,46 @@ services:
   nginx:
     build: .
     environment:
-      - RTMP_PUSH_URLS
+      - RTMP_PUSH_URLS=rtmp://facebook:1935/live/facebook,rtmp://restream:1935/live/restream,rtmp://twitch:1935/live/twitch,rtmp://youtube:1935/live/youtube,rtmp://backup:1935/live/backup
     ports:
       - "1935:1935"
       - "1936:8080"
+    links:
+      - "restream"
+      - "twitch"
+      - "youtube"
+      - "backup"
+      - "facebook"
+  restream:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$RESTREAM_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  twitch:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$TWITCH_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  youtube:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$YOUTUBE_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  backup:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$BACKUP_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  facebook:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$FACEBOOK_RTMP_PUSH_URLS
+    ports:
+      - "1935"
     links:
       - "stunnel"
   stunnel:
@@ -14,4 +50,4 @@ services:
       context: .
       dockerfile: stunnel.Dockerfile
     ports:
-      - "19350:19350"
+      - "19350"
