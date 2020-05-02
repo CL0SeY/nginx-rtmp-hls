@@ -40,7 +40,7 @@ http {
                 application/vnd.apple.mpegurl m3u8;
             }
             root /tmp;
-            add_header  Cache-Control "max-age=1, public";
+            add_header  Cache-Control "no-store";
             add_header  Access-Control-Allow-Origin *;
         }
         location /hls {
@@ -48,7 +48,7 @@ http {
                 video/mp2ts ts;
             }
             root /tmp;
-            add_header  Cache-Control "max-age=3600, public";
+            # add_header  Cache-Control "max-age=600, public, s-maxage=600";
             add_header  Access-Control-Allow-Origin *;
         }
 
@@ -58,21 +58,24 @@ http {
         location /stat {
             rtmp_stat all;
             rtmp_stat_stylesheet stat.xsl;
+            add_header  Cache-Control "no-store";
         }
         location /stat.xsl {
             alias /opt/nginx/conf/stat.xsl;
+            add_header  Cache-Control "no-store";
         }
         location /control {
             rtmp_control all;
+            add_header  Cache-Control "no-store";
         }
-        
+
         error_page  500 502 503 504 /50x.html;
         location = /50x.html {
             root html;
         }
     }
 }
-        
+
 !EOF
 
 
