@@ -2,6 +2,85 @@ version: '3'
 services:
   nginx:
     build: .
+    environment:
+      - RTMP_PUSH_URLS=rtmp://facebook:1935/live/facebook,rtmp://restream:1935/live/restream,rtmp://twitch:1935/live/twitch,rtmp://youtube:1935/live/youtube,rtmp://youtube-mf:1935/live/youtube,rtmp://backup:1935/live/backup
+      - RTMP_STREAM_NAMES=live,vj,dj,vidcon,test
     ports:
       - "1935:1935"
-      - "8080:8080"
+      - "1936:8080"
+    links:
+      - "restream"
+      - "twitch"
+      - "youtube"
+      - "backup"
+      - "facebook"
+  vj:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=rtmp://twitch-test:1935/live/twitch-test
+      - RTMP_STREAM_NAMES=live,test
+    ports:
+      - "1937:1935"
+      - "1938:8080"
+    links:
+      - "twitch-test"
+  restream:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$RESTREAM_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  twitch:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$TWITCH_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  youtube:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$YOUTUBE_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  youtube-mf:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$YOUTUBE_MF_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  backup:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$BACKUP_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+  facebook:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$FACEBOOK_RTMP_PUSH_URLS
+    ports:
+      - "1935"
+    links:
+      - "stunnel"
+  stunnel:
+    build:
+      context: .
+      dockerfile: stunnel.Dockerfile
+    ports:
+      - "19350"
+  nginx_test:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=rtmp://twitch-test:1935/live/twitch-test
+      - RTMP_STREAM_NAMES=live,test
+    ports:
+      - "1939:1935"
+      - "1940:8080"
+    links:
+      - "twitch-test"
+  twitch-test:
+    build: .
+    environment:
+      - RTMP_PUSH_URLS=$TWITCH_TEST_RTMP_PUSH_URLS
+    ports:
+      - "1935"
